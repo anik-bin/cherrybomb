@@ -13,7 +13,7 @@ pub struct EpForTable{
     headers_params:Vec<String>,
     req_body_params:Vec<String>,
     res_params:Vec<String>,
-    statuses:Vec<String>,
+    statuses:HashSet<String>,
 }
 impl fmt::Display for EpForTable {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
@@ -27,7 +27,7 @@ impl fmt::Display for EpForTable {
         let r_b_p = &r_b_p[0..*([r_b_p.len(),25].iter().min().unwrap_or(&0))];
         let r_p = vv(&self.res_params,0);
         let r_p = &r_p[0..*([r_p.len(),25].iter().min().unwrap_or(&0))];
-        string.push_str(&format!("{:75}|{:7}|{:25}|{:25}|{:25}|{:25}|{:8}\n",&self.path.bold().bright_cyan(),vv(&self.ops,0),q_p,h_p,r_b_p,r_p,color_status(&vv(&self.statuses,0))));
+        string.push_str(&format!("{:75}|{:7}|{:25}|{:25}|{:25}|{:25}|{:8}\n",&self.path.bold().bright_cyan(),vv(&self.ops,0),q_p,h_p,r_b_p,r_p,color_status(&vv(&self.statuses.iter().cloned().collect::<Vec<String>>(),0))));
         for i in 1..lines{
             let h_p = vv(&self.headers_params,i);
             let h_p = &h_p[0..*([h_p.len(),25].iter().min().unwrap_or(&0))];
@@ -37,7 +37,7 @@ impl fmt::Display for EpForTable {
             let r_b_p = &r_b_p[0..*([r_b_p.len(),25].iter().min().unwrap_or(&0))];
             let r_p = vv(&self.res_params,i);
             let r_p = &r_p[0..*([r_p.len(),25].iter().min().unwrap_or(&0))];
-            string.push_str(&format!("{:75}|{:7}|{:25}|{:25}|{:25}|{:25}|{:8}\n","",vv(&self.ops,i),q_p,h_p,r_b_p,r_p,color_status(&vv(&self.statuses,i))));
+            string.push_str(&format!("{:75}|{:7}|{:25}|{:25}|{:25}|{:25}|{:8}\n","",vv(&self.ops,i),q_p,h_p,r_b_p,r_p,color_status(&vv(&self.statuses.iter().cloned().collect::<Vec<String>>(),i))));
         }
         string.push_str(&format!("{:-<200}\n",""));
         write!(f,"{}",string)
@@ -143,7 +143,7 @@ impl EpForTable{
             ops:ops1.iter().map(|(m,_)| m).cloned().collect(),
             query_params,
             headers_params,
-            statuses:ops1.iter().flat_map(|(_,op)| op.responses.as_ref().unwrap_or(&HashMap::new()).iter().map(|(s,_)| s).cloned().collect::<Vec<String>>()).collect(),
+            statuses:ops1.iter().flat_map(|(_,op)| op.responses.as_ref().unwrap_or(&HashMap::new()).keys().cloned().collect::<Vec<String>>()).collect(),
             res_params,
             req_body_params
         }

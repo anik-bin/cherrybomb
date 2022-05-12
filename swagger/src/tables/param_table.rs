@@ -38,28 +38,9 @@ pub struct ParamForTable{
     //default:Option<SchemaStrInt>,
 }
 //value_from_vec
-fn vv<T>(vec:&[T],loc:usize)->String
-where T:Clone+std::fmt::Display{
-    if vec.len()>loc {
-        vec[loc].to_string()
-    }else{
-        String::new()
-    }
-}
-fn color_status(string:&str)->ColoredString{
-    match string.to_lowercase().chars().next().unwrap_or(' '){
-        'd'=>string.bold().truecolor(107,114,128),
-        '2'=>string.bold().truecolor(134,239,172),
-        '3'=>string.bold().truecolor(147,197,253),
-        '4'=>string.bold().truecolor(253,224,71),
-        '5'=>string.bold().truecolor(239,68,68),
-        _=>string.bold(),
-
-    }
-}
 fn color_type(string:&str)->ColoredString{
     match string.to_lowercase().as_str(){
-        "object"=>string.bold().truecolor(248,113,113),
+        "object"=>string.bold().truecolor(244,114,182),
         "array"=>string.bold().truecolor(251,146,60),
         "string"=>string.bold().truecolor(190,242,100),
         "number"=>string.bold().truecolor(125,211,252),
